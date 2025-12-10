@@ -1,0 +1,144 @@
+openapi: 3.0.0
+info:
+  title: Robotics Book RAG API
+  version: 1.0.0
+  description: API for RAG chatbot, personalization, and Urdu translation for the Robotics Technical Book.
+
+servers:
+  - url: /api/v1
+    description: Local development server
+
+paths:
+  /rag/query:
+    post:
+      summary: Query the RAG chatbot
+      operationId: ragQuery
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: ID of the querying user for personalization
+                query:
+                  type: string
+                  description: The user's natural language query
+                chapter_id:
+                  type: string
+                  nullable: true
+                  description: Optional chapter ID to ground RAG to specific content
+                selected_text:
+                  type: string
+                  nullable: true
+                  description: Optional selected text from the book to ground RAG
+              required:
+                - user_id
+                - query
+      responses:
+        '200':
+          description: Successful RAG response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  answer:
+                    type: string
+                    description: The RAG generated answer
+                  sources:
+                    type: array
+                    items:
+                      type: string
+                    description: List of source document IDs or references
+        '400':
+          description: Invalid input or missing required parameters
+        '500':
+          description: Internal server error or RAG failure
+
+  /user/profile:
+    put:
+      summary: Update user profile for personalization
+      operationId: updateUserProfile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                user_id:
+                  type: string
+                  description: ID of the user whose profile is being updated
+                software_background:
+                  type: string
+                  nullable: true
+                  description: User's software development experience
+                hardware_background:
+                  type: string
+                  nullable: true
+                  description: User's hardware experience
+                preferences:
+                  type: object
+                  nullable: true
+                  description: JSON object for other user preferences
+              required:
+                - user_id
+      responses:
+        '200':
+          description: User profile updated successfully
+        '400':
+          description: Invalid input
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
+
+  /chapter/{chapter_id}/translate:
+    post:
+      summary: Translate chapter content to Urdu
+      operationId: translateChapter
+      parameters:
+        - in: path
+          name: chapter_id
+          schema:
+            type: string
+          required: true
+          description: The ID of the chapter to translate
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                target_language:
+                  type: string
+                  enum: [ "ur" ]
+                  default: "ur"
+                  description: The target language code (only "ur" for Urdu)
+                content:
+                  type: string
+                  description: The English content to translate
+              required:
+                - target_language
+                - content
+      responses:
+        '200':
+          description: Translation successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  translated_content:
+                    type: string
+                    description: The translated content in Urdu
+        '400':
+          description: Invalid input or unsupported language
+        '404':
+          description: Chapter not found
+        '500':
+          description: Translation service error
