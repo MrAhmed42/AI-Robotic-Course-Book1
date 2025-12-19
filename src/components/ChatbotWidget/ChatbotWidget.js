@@ -30,7 +30,7 @@ const ChatbotWidget = () => {
 
         try {
             // Note: Using port 8080 as per our last successful Uvicorn startup
-            const response = await fetch('http://127.0.0.1:8000/api/chat/query', { 
+            const response = await fetch('https://ahmed421092-final-work-rag.hf.space/api/chat/query', { 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
