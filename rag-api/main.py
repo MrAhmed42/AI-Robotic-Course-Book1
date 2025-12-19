@@ -1,26 +1,29 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-import rag # Imports the updated rag.py
+import sys
+import os
+
+# Ensure the 'app' directory is in the path so 'import rag' works correctly in Docker
+sys.path.append(os.path.join(os.path.dirname(__file__), 'app'))
+try:
+    import rag 
+except ImportError:
+    # Fallback for different directory structures
+    from . import rag
 
 app = FastAPI()
 
-# CORS CONFIGURATION
-origins = [
-    "http://localhost",
-    "http://localhost:3000",  # Allow Docusaurus dev server
-    "http://127.0.0.1:3000",
-    "http://127.0.0.1:8000"
-]
-
+# --- UPDATED CORS CONFIGURATION ---
+# Setting allow_origins to ["*"] fixes the "Failed to Fetch" error on Vercel
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"], 
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-# END CORS CONFIGURATION
+# --- END CORS CONFIGURATION ---
 
 # --- INPUT MODEL ---
 class Query(BaseModel):
@@ -29,7 +32,7 @@ class Query(BaseModel):
 
 @app.get("/")
 def read_root():
-    return {"Hello": "World"}
+    return {"Hello": "World", "status": "Backend is live and accessible"}
 
 # --- MAIN RAG ENDPOINT ---
 @app.post("/api/chat/query")
@@ -39,24 +42,21 @@ def query(query: Query):
     final_answer = None
     
     try:
-        # 1. CRITICAL FIX: Pass BOTH question and selected_text to the rag function
+        # Pass BOTH question and selected_text to the rag function
         final_answer = rag.run_rag_agent(
             question=query.question, 
             selected_text=query.selected_text
         )
         
     except Exception as e:
-        # 2. Log the detailed crash message for server-side debugging
         error_message = f"CRASH DETECTED IN RAG LOGIC: {e}"
         print(error_message)
     
-    # --- CRITICAL FIX: Ensure final_answer is a string and not None ---
-    if final_answer is None or final_answer.strip() == "":
-        # This handles both RAG failure and a crash (Exception e)
+    # Ensure final_answer is a string and not None
+    if final_answer is None or (isinstance(final_answer, str) and final_answer.strip() == ""):
         final_answer = "Sorry, I couldn't find a relevant answer or the RAG agent failed to generate a response. Please rephrase your question."
         print("DEBUG: Final answer was None/empty, sending fallback message.")
         
-    # 3. Return a successful 200 OK response with the message
     return {
         "message": final_answer, 
         "question": query.question, 
