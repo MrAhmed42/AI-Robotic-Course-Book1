@@ -1,18 +1,17 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
-
 .heroBanner {
-  padding: 4rem 0;
+  padding: 6rem 0; /* Increased padding for a more "Apple-style" professional look */
   text-align: center;
   position: relative;
   overflow: hidden;
+  /* Deep dark background to match the robotics theme */
+  background: #0d1117; 
+  color: white;
+  border-bottom: 1px solid #30363d;
 }
 
 @media screen and (max-width: 996px) {
   .heroBanner {
-    padding: 2rem;
+    padding: 3rem;
   }
 }
 
@@ -20,4 +19,20 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  margin-top: 2rem;
+}
+
+/* Make the "Start Reading" button stand out */
+.buttons :global(.button) {
+  background-color: #25c2a0; /* Robotics Green */
+  border-color: #25c2a0;
+  color: #000;
+  font-weight: bold;
+  padding: 0.8rem 2.5rem;
+  transition: transform 0.2s;
+}
+
+.buttons :global(.button:hover) {
+  transform: scale(1.05);
+  background-color: #2ed1ac;
 }

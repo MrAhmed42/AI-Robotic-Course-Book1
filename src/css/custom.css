@@ -1,30 +1,87 @@
-/**
- * Any CSS included here will be global. The classic template
- * bundles Infima by default. Infima is a CSS framework designed to
- * work well for content-centric websites.
- */
+/* --- src/css/custom.css --- */
 
-/* You can override the default Infima variables here. */
-:root {
-  --ifm-color-primary: #2e8555;
-  --ifm-color-primary-dark: #29784c;
-  --ifm-color-primary-darker: #277148;
-  --ifm-color-primary-darkest: #205d3b;
-  --ifm-color-primary-light: #33925d;
-  --ifm-color-primary-lighter: #359962;
-  --ifm-color-primary-lightest: #3cad6e;
-  --ifm-code-font-size: 95%;
-  --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.1);
-}
-
-/* For readability concerns, you should choose a lighter palette in dark mode. */
 [data-theme='dark'] {
   --ifm-color-primary: #25c2a0;
   --ifm-color-primary-dark: #21af90;
   --ifm-color-primary-darker: #1fa588;
   --ifm-color-primary-darkest: #1a8870;
-  --ifm-color-primary-light: #29d5b0;
-  --ifm-color-primary-lighter: #32d8b4;
-  --ifm-color-primary-lightest: #4fddbf;
+  
+  --ifm-background-color: #0d1117; 
+  --ifm-navbar-background-color: #0d1117;
+  --ifm-menu-color-background-active: rgba(37, 194, 160, 0.1);
+  
+  --ifm-font-color-base: #e6edf3;
+  --ifm-heading-color: #25c2a0;
+  
+  /* Forces all sidebar text to white by default */
+  --ifm-menu-color: #ffffff; 
+  --ifm-menu-color-active: #25c2a0; 
+  
   --docusaurus-highlighted-code-line-bg: rgba(0, 0, 0, 0.3);
+}
+
+.navbar {
+  border-bottom: 1px solid #30363d;
+  background-color: #0d1117 !important;
+}
+
+.navbar__link, .navbar__title {
+  color: #ffffff !important;
+}
+
+.theme-doc-sidebar-container {
+  border-right: 1px solid #30363d !important;
+  background-color: #0d1117 !important;
+}
+
+/* --- SIDEBAR MODULE VS FILE FIX --- */
+
+/* 1. White Arrows for Modules */
+.menu__list-item--collapsed .menu__link--sublist:after,
+.menu__link--sublist:after {
+  content: '▶'; 
+  font-size: 0.7rem;
+  margin-left: auto;
+  transition: transform 0.2s ease;
+  color: #ffffff !important; /* Turned Arrows White */
+}
+
+/* 2. Rotate the arrow */
+.menu__list-item:not(.menu__list-item--collapsed) > .menu__link--sublist:after {
+  transform: rotate(90deg);
+}
+
+/* 3. Pure White Text for all Sidebar links */
+.menu__link {
+  color: #ffffff !important; /* Force all text to white */
+  border-radius: 8px;
+  margin: 2px 0;
+}
+
+/* 4. Indentation for Files (staying white) */
+.menu__list-item:not(.menu__list-item--collapsed) .menu__list .menu__link:not(.menu__link--sublist) {
+  padding-left: 1.5rem; 
+  font-size: 0.9rem;
+  color: #ffffff !important; /* Changed from grey to white */
+}
+
+/* 5. Only Active item turns Green */
+.menu__link--active, 
+.menu__link--active:not(.menu__link--sublist) {
+  color: #25c2a0 !important;
+  font-weight: bold;
+}
+
+/* 6. Arrow of active module turns green */
+.menu__link--active:after {
+  color: #25c2a0 !important;
+}
+
+.menu__link:hover {
+  color: #25c2a0 !important;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.theme-doc-footer-edit-this-page {
+  display: none;
 }
