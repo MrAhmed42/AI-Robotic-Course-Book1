@@ -24,7 +24,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             /* Updated to your specific book entry path */
-            to="/AI-Robotic-Course-Book/docs/intro/"> 
+            to="/docs/intro/"> 
             Start Reading →
           </Link>
         </div>
